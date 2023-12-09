@@ -23,14 +23,14 @@ async def on_message(message):
 
 @client.event
 async def on_message(message):
-    headers = {"Authorization": MEDAL_API}
-    r = requests.get(
-        "https://developers.medal.tv/v1/latest?userId=50766636&limit=1",
-        headers=headers)
-    response = r.json()
-    print(response)
     if "hey" in message.content.lower():
-        await message.channel.send(f"<@!{1}>")
+        headers = {"Authorization": MEDAL_API}
+        r = requests.get(
+            "https://developers.medal.tv/v1/latest?userId=50766636&limit=1",
+            headers=headers)
+        response = r.json()
+        await message.channel.send(response["contentObjects"][0]["directClipUrl"])
+        #await message.channel.send('test')
 
 
 @bot.command()
