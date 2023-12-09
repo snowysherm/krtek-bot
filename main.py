@@ -1,5 +1,6 @@
 import discord
 import os
+import requests
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -11,10 +12,23 @@ bot = commands.Bot(command_prefix='$', intents=intents)
 
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+MEDAL_API = os.getenv("MEDAL_API")
 
 
 @client.event
 async def on_message(message):
+    if "hey" in message.content.lower():
+        await message.channel.send(f"<@!{1}>")
+
+
+@client.event
+async def on_message(message):
+    headers = {"Authorization": MEDAL_API}
+    r = requests.get(
+        "https://developers.medal.tv/v1/latest?userId=50766636&limit=1",
+        headers=headers)
+    response = r.json()
+    print(response)
     if "hey" in message.content.lower():
         await message.channel.send(f"<@!{1}>")
 
