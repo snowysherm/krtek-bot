@@ -1,6 +1,7 @@
 import discord
 import os
 import requests
+import random
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -15,13 +16,28 @@ MEDAL_API = os.getenv("MEDAL_API")
 
 
 @bot.command()
-async def clip(ctx):
+async def clip(ctx, game=None):
+    global response
     headers = {"Authorization": MEDAL_API}
-    r = requests.get(
-        "https://developers.medal.tv/v1/latest?userId=50766636&limit=1",
-        headers=headers)
-    response = r.json()
-    await ctx.send(response["contentObjects"][0]["directClipUrl"])
+
+    if game == "swtor":
+        r = requests.get(
+            f'https://developers.medal.tv/v1/latest?userId=50766636&limit=1000&categoryId=165',
+            headers=headers)
+        response = r.json()
+    elif game == "hunt":
+        r = requests.get(
+            f'https://developers.medal.tv/v1/latest?userId=50766636&limit=1000&categoryId=947',
+            headers=headers)
+        response = r.json()
+    elif not game:
+        r = requests.get(
+            f'https://developers.medal.tv/v1/latest?userId=50766636&limit=1000',
+            headers=headers)
+        response = r.json()
+
+    length = len(response["contentObjects"])
+    await ctx.send(response["contentObjects"][random.randint(0, int(length))]["directClipUrl"])
 
 
 @bot.command()
