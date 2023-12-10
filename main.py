@@ -15,26 +15,30 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 MEDAL_API = os.getenv("MEDAL_API")
 
 
-@bot.command()
-async def clip(ctx, game=None):
-    global response
+def medal_url(id=None):
+    global r
     headers = {"Authorization": MEDAL_API}
-
-    if game == "swtor":
+    if id:
         r = requests.get(
-            f'https://developers.medal.tv/v1/latest?userId=50766636&limit=1000&categoryId=165',
+            f'https://developers.medal.tv/v1/latest?userId=50766636&limit=1000&categoryId={id}',
             headers=headers)
-        response = r.json()
-    elif game == "hunt":
-        r = requests.get(
-            f'https://developers.medal.tv/v1/latest?userId=50766636&limit=1000&categoryId=947',
-            headers=headers)
-        response = r.json()
-    elif not game:
+    elif not id:
         r = requests.get(
             f'https://developers.medal.tv/v1/latest?userId=50766636&limit=1000',
             headers=headers)
-        response = r.json()
+
+    return r.json()
+
+
+@bot.command()
+async def clip(ctx, game=None):
+    global response
+    if game == "swtor":
+        response = medal_url(165)
+    elif game == "hunt":
+        response = medal_url(947)
+    elif not game:
+        response = medal_url()
 
     length = len(response["contentObjects"])
     await ctx.send(response["contentObjects"][random.randint(0, int(length))]["directClipUrl"])
