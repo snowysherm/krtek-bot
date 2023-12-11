@@ -52,4 +52,32 @@ async def stefan(ctx, arg):
         count += 1
 
 
+@bot.tree.command(name="ping", description="ping", guild=discord.Object(
+    id=698964831671156907))
+async def first_command(interaction):
+    await interaction.response.send_message(f"pong")
+
+# Sync slash commands
+
+
+@bot.command()
+async def sync(ctx):
+    if ctx.author.id == 418731919438643212:
+        await bot.tree.sync(guild=discord.Object(id=698964831671156907))
+        await ctx.send("Synced!")
+    else:
+        await ctx.send("No permission")
+
+# Delete slash commands
+
+
+@bot.command()
+async def delete(ctx):
+    if ctx.author.id == 418731919438643212:
+        bot.tree.clear_commands(guild=None)
+        await bot.tree.sync()
+        await ctx.send('Commands deleted.')
+    else:
+        await ctx.send("No permission")
+
 bot.run(DISCORD_TOKEN)
