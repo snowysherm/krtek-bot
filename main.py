@@ -22,7 +22,13 @@ async def stefan(ctx, arg):
         count += 1
 
 
-@bot.tree.command(name="ping", description="ping", guild=discord.Object(
+@bot.command()
+async def avatar(ctx, *,  avamember: discord.Member = None):
+    userAvatarUrl = avamember.avatar.url
+    await ctx.send(userAvatarUrl)
+
+
+@bot.tree.command(name="medal", description="Responds with a random Medal Clip", guild=discord.Object(
     id=698964831671156907))
 async def first_command(interaction, game: str = None):
     global response
